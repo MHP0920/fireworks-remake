@@ -19,16 +19,16 @@ FIREWORK_SPEED_MIN = 17
 FIREWORK_SPEED_MAX = 20
 FIREWORK_SIZE = 6
 # particle
-PARTICLE_LIFESPAN = 70
+PARTICLE_LIFESPAN = 60
 X_SPREAD = 0.8
 Y_SPREAD = 0.8
 PARTICLE_SIZE = 4
-MIN_PARTICLES = 20
+MIN_PARTICLES = 30
 MAX_PARTICLES = 50
 X_WIGGLE_SCALE = 20  # higher -> less wiggle
 Y_WIGGLE_SCALE = 10
-EXPLOSION_RADIUS_MIN = 10
-EXPLOSION_RADIUS_MAX = 25
+EXPLOSION_RADIUS_MIN = 50
+EXPLOSION_RADIUS_MAX = 80
 COLORFUL = True
 # trail
 TRAIL_LIFESPAN = PARTICLE_LIFESPAN / 2
@@ -36,7 +36,7 @@ TRAIL_FREQUENCY = 10  # higher -> less trails
 TRAILS = True
 # music
 pygame.mixer.init()
-pygame.mixer.music.load('firework-sound.mp3')
+pygame.mixer.Channel(0).play(pygame.mixer.Sound('longphungxumvay.mp3'), loops=-1)
 #FADE_COLOURS = [(45, 45, 45), (60, 60, 60), (75, 75, 75), (125, 125, 125), (150, 150, 150)]
 
 class Firework:
@@ -70,7 +70,7 @@ class Firework:
             self.particles = [Particle(self.firework.pos.x, self.firework.pos.y, False, self.colours[randint(0, 2)]) for _ in range(amount)]
         else:
             self.particles = [Particle(self.firework.pos.x, self.firework.pos.y, False, self.colour) for _ in range(amount)]
-        pygame.mixer.music.play()
+        pygame.mixer.Channel(1).play(pygame.mixer.Sound('firework-sound.mp3'))
     def show(self, win: pygame.Surface) -> None:
         # draw the firework on the given surface
         x = int(self.firework.pos.x)
@@ -156,7 +156,7 @@ class Particle(object):
     def decay(self) -> None:
         # random decay of the particles
         if self.life > PARTICLE_LIFESPAN:
-            if randint(0, 15) == 0:
+            if randint(0, 30) == 0:
                 self.remove = True
         # if too old, begone
         if not self.remove and self.life > PARTICLE_LIFESPAN * 1.5:
@@ -181,7 +181,7 @@ class Trail(Particle):
         self.colour = (min(self.colour[0] + 5, 255), min(self.colour[1] + 5, 255), min(self.colour[2] + 5, 255))
 
         if self.life > TRAIL_LIFESPAN:
-            ran = (randint(0, 15) if not self.is_firework else randint(0, 5))
+            ran = (randint(0, 30) if not self.is_firework else randint(0, 5))
             if ran == 0:
                 return True
         # if too old, begone
@@ -230,17 +230,10 @@ def main():
         # append background
         win.blit(BACKGROUND, (0, 0))
 
-        if randint(0, 30) == 1:  # create new firework
+        if randint(0, 20) == 1:  # create new firework
             fireworks.append(Firework())
         
         update(win, fireworks, trails)
-
-        # stats for fun
-        # total_particles = 0
-        # for f in fireworks:
-        #    total_particles += len(f.particles)
-
-        # print(f"Fireworks: {len(fireworks)}\nParticles: {total_particles}\n\n")
 
     pygame.quit()
     quit()
