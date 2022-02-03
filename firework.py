@@ -1,8 +1,9 @@
-# Made by Lytix 18.07.2020, updated 13.01.2022
+# Remade by MHP 03.02.2022
 import pygame
 from random import randint, uniform, choice
 import math
-
+import pygame.mixer
+from win32api import GetSystemMetrics
 vector2 = pygame.math.Vector2
 trails = []
 fade_p = []
@@ -10,7 +11,7 @@ fade_p = []
 # general
 GRAVITY_FIREWORK = vector2(0, 0.3)
 GRAVITY_PARTICLE = vector2(0, 0.07)
-DISPLAY_WIDTH = DISPLAY_HEIGHT = 800
+DISPLAY_WIDTH, DISPLAY_HEIGHT = (GetSystemMetrics(0), GetSystemMetrics(1)) 
 BACKGROUND = pygame.image.load('background.jpg')
 BACKGROUND = pygame.transform.scale(BACKGROUND, (DISPLAY_WIDTH, DISPLAY_HEIGHT))
 # firework
@@ -33,6 +34,9 @@ COLORFUL = True
 TRAIL_LIFESPAN = PARTICLE_LIFESPAN / 2
 TRAIL_FREQUENCY = 10  # higher -> less trails
 TRAILS = True
+# music
+pygame.mixer.init()
+pygame.mixer.music.load('firework-sound.mp3')
 #FADE_COLOURS = [(45, 45, 45), (60, 60, 60), (75, 75, 75), (125, 125, 125), (150, 150, 150)]
 
 class Firework:
@@ -66,7 +70,7 @@ class Firework:
             self.particles = [Particle(self.firework.pos.x, self.firework.pos.y, False, self.colours[randint(0, 2)]) for _ in range(amount)]
         else:
             self.particles = [Particle(self.firework.pos.x, self.firework.pos.y, False, self.colour) for _ in range(amount)]
-
+        pygame.mixer.music.play()
     def show(self, win: pygame.Surface) -> None:
         # draw the firework on the given surface
         x = int(self.firework.pos.x)
