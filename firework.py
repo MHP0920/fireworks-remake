@@ -61,9 +61,7 @@ class Firework:
                 self.explode()
 
         else:
-            times = 2
             for particle in self.particles:
-                #pygame.mixer.Channel(times).play(pygame.mixer.Sound('firework-sound.mp3'))
                 particle.update()
                 particle.show(win)
 
