@@ -28,7 +28,7 @@ MAX_PARTICLES = 50
 X_WIGGLE_SCALE = 20  # higher -> less wiggle
 Y_WIGGLE_SCALE = 10
 EXPLOSION_RADIUS_MIN = 50
-EXPLOSION_RADIUS_MAX = 80
+EXPLOSION_RADIUS_MAX = 100
 COLORFUL = True
 # trail
 TRAIL_LIFESPAN = PARTICLE_LIFESPAN / 2
@@ -36,6 +36,8 @@ TRAIL_FREQUENCY = 10  # higher -> less trails
 TRAILS = True
 # music
 pygame.mixer.init()
+# add more channels to the mixer
+pygame.mixer.set_num_channels(100)
 pygame.mixer.Channel(0).play(pygame.mixer.Sound('longphungxumvay.mp3'), loops=-1)
 #FADE_COLOURS = [(45, 45, 45), (60, 60, 60), (75, 75, 75), (125, 125, 125), (150, 150, 150)]
 
@@ -59,7 +61,9 @@ class Firework:
                 self.explode()
 
         else:
+            times = 2
             for particle in self.particles:
+                #pygame.mixer.Channel(times).play(pygame.mixer.Sound('firework-sound.mp3'))
                 particle.update()
                 particle.show(win)
 
@@ -70,7 +74,7 @@ class Firework:
             self.particles = [Particle(self.firework.pos.x, self.firework.pos.y, False, self.colours[randint(0, 2)]) for _ in range(amount)]
         else:
             self.particles = [Particle(self.firework.pos.x, self.firework.pos.y, False, self.colour) for _ in range(amount)]
-        pygame.mixer.Channel(1).play(pygame.mixer.Sound('firework-sound.mp3'))
+        pygame.mixer.find_channel().play(pygame.mixer.Sound('firework-sound.mp3'))
     def show(self, win: pygame.Surface) -> None:
         # draw the firework on the given surface
         x = int(self.firework.pos.x)
@@ -208,7 +212,7 @@ def update(win: pygame.Surface, fireworks: list, trails: list) -> None:
 
 def main():
     pygame.init()
-    pygame.display.set_caption("Fireworks in Pygame")
+    pygame.display.set_caption("Happy New Year!!")
     win = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
     clock = pygame.time.Clock()
 
@@ -225,16 +229,14 @@ def main():
                 if event.key == pygame.K_1:
                     fireworks.append(Firework())
                 elif event.key == pygame.K_2:
-                    for i in range(10):
+                    for i in range(randint(3,4)):
                         fireworks.append(Firework())
         # append background
         win.blit(BACKGROUND, (0, 0))
 
         if randint(0, 20) == 1:  # create new firework
             fireworks.append(Firework())
-        
         update(win, fireworks, trails)
-
     pygame.quit()
     quit()
 
